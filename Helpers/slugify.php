@@ -11,7 +11,16 @@ if( !function_exists('slugify') ){
         // The loop enhances uniqueness
         while($object->where('slug',$slug)->first()){
             $kount++;
-            $slug = $slug.'-'.$kount;
+            if ( $kount > 1 ):
+                $match = [];
+                if ( preg_match('/^(.+)(-\d+)$/',$slug,$match) ):
+                    $pos = strrpos($slug,$match[2]);
+                    $len = strlen($match[2]);
+                    $slug = substr_replace($slug,"-$kount",$pos,$len);
+                endif;
+            else:
+                $slug = $slug.'-'.$kount;
+            endif;
         }
         return $slug;
     }
